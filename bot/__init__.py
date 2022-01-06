@@ -27,18 +27,26 @@ load_dotenv('config.env')
 Interval = []
 
 
+CONFIG_FILE_URL = os.environ.get('CONFIG_FILE_URL', None)
+if CONFIG_FILE_URL is not None:
+    res = requests.get(CONFIG_FILE_URL)
+    if res.status_code == 200:
+        with open('config.env', 'wb+') as f:
+            f.write(res.content)
+            f.close()
+    else:
+        logging.error(res.status_code)
+
+
+
 def getConfig(name: str):
     return os.environ[name]
 
 
 LOGGER = logging.getLogger(__name__)
 
-try:
-    if bool(getConfig('_____REMOVE_THIS_LINE_____')):
-        logging.error('The README.md file there to be read! Exiting now!')
-        exit()
-except KeyError:
-    pass
+
+   
 
 aria2 = aria2p.API(
     aria2p.Client(
